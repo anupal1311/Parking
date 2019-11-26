@@ -126,7 +126,34 @@ while(user_yes_no == "Y") do
         10. Remove a Bike
         11. Remove a Car"
 
-    puts "Please Enter indexes for Car"
+    userSelection = gets.chomp.to_i
+
+    case userSelection
+    when 1
+        vehicle = Bicycle.new(1,"Bicycle")
+    when 2
+        vehicle = Bike.new(2,"Bike")
+    when 3
+        vehicle = Car.new(3,"Car")
+    when 4
+
+    when 5
+
+    when 6
+        puts vehicle.bicycleParked
+    when 7
+        puts vehicle.bikeParked
+    when 8
+        puts vehicle.carsParked
+    when 9
+        # needs tp done
+    when 10
+        # NEEDS TO be done
+    when 11
+        # needs to be done
+    else
+        puts "Please select any option from the above only !!"
+
     indexes = gets.chomp.split(" ").map {|x| x.to_i}
     parkingLotObject.givenPositions = indexes
 
