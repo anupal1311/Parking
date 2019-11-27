@@ -109,6 +109,10 @@ class ParkingLot
         puts "*"*40
     end
 
+    def self.get_number_of_vehicles
+        @@Number_of_vehicles_parked
+    end
+
 end
 
 class Vehicle
@@ -175,11 +179,17 @@ while(user_yes_no == "Y") do
     when 5
         parkingLotObject.display_parkingLot
     when 6
-        puts ParkingLot.Number_of_vehicles_parked[:Bicycle]
+        puts "*"*15 + " Number of Bicycles Present in Parking Lot " + "*"*15
+        puts "\t\t\t\t #{ParkingLot.get_number_of_vehicles["Bicycle"]}"
+        puts "*"*70
     when 7
-        puts ParkingLot.Number_of_vehicles_parked[:Bicycle]
+        puts "*"*15 + " Number of Bikes Present in Parking Lot " + "*"*15
+        puts "\t\t\t\t #{ParkingLot.get_number_of_vehicles["Bike"]}"
+        puts "*"*70
     when 8
-        puts ParkingLot.Number_of_vehicles_parked[:Bicycle]
+        puts "*"*15 + " Number of Cars Present in Parking Lot " + "*"*15
+        puts "\t\t\t\t #{ParkingLot.get_number_of_vehicles["Car"]}"
+        puts "*"*70
     when 9
         vehicle = Bicycle.new("Bicycle")
         parkingLotObject.remove_vehicle_mechaism(vehicle)
