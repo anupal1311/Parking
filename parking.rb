@@ -1,6 +1,5 @@
 class ParkingLot
     @@Number_of_vehicles_parked = { "Car" => 0 , "Bike" => 0 , "Bicycle" => 0 }
-    @@vehicleDetails = 
 
     attr_accessor :rows, :columns , :parking_lot_dimensions, :given_positions, :actual_positions
     def initialize(rows,columns)
