@@ -1,98 +1,100 @@
 class ParkingLot
-    attr_accessor :rows, :columns , :parking_lot_dimensions, :givenPositions, :actualPositions
+    attr_accessor :rows, :columns , :parking_lot_dimensions, :given_positions, :actual_positions
     def initialize(rows,columns)
         @rows = rows
         @columns = columns
         @parking_lot_dimensions = Array.new(rows) { Array.new(columns, 0) }
-        @givenPositions = []
-        @actualPositions = []
+        @given_positions = []
+        @actual_positions = []
     end
 
     def check_incremental_array(step, array)
         flag = true
         if (array.length > 1)
-            sortedArray = array.sort
-            lastNumber = sortedArray[0]
-            sortedArray[1, sortedArray.length - 1].each do |num|
-                if lastNumber + step != num
+            sorted_array = array.sort
+            last_number = sorted_array[0]
+            sorted_array[1, sorted_array.length - 1].each do |num|
+                if last_number + step != num
                     flag = false
                     break
                 end
-                lastNumber = num
+                last_number = num
             end
             flag = true
         end        
         return flag
     end
 
-    def validateLocation
+    def validate_location
         flag = false
-        allSpots = @givenPositions.map { |ele| [ ele/@columns , ele% @columns ] }
-        allRows = allSpots.map {|ele| ele[0]}
-        allColumns = allSpots.map {|ele| ele[1]}
+        all_spots = @given_positions.map { |ele| [ ele/@columns , ele% @columns ] }
+        all_rows = all_spots.map {|ele| ele[0]}
+        all_columns = all_spots.map {|ele| ele[1]}
         
-        validRow = allRows.any?{ |ele| ele < @rows}
-        if validRow
-            if((allRows.uniq.length == 1 && check_incremental_array(1,allColumns)) || (allColumns.uniq.length == 1 && check_incremental_array(1,allRows)) || (allRows.uniq.length == allColumns.uniq.length && check_incremental_array(1,allRows.uniq) && check_incremental_array(1,allColumns.uniq) ) )
+        valid_row = all_rows.any?{ |ele| ele < @rows}
+        if valid_row
+            if((all_rows.uniq.length == 1 && check_incremental_array(1,all_columns)) || (all_columns.uniq.length == 1 && check_incremental_array(1,all_rows)) || (all_rows.uniq.length == all_columns.uniq.length && check_incremental_array(1,all_rows.uniq) && check_incremental_array(1,all_columns.uniq) ) )
                 flag = true
-                @actualPositions = allSpots
+                @actual_positions = all_spots
             end
         end
         return flag
     end
 
-    def checkAvailability
-        return @actualPositions.all? {|ele| @parking_lot_dimensions[ele[0]][ele[1]] == 0} ? true : false
+    def check_availability
+        return @actual_positions.all? {|ele| @parking_lot_dimensions[ele[0]][ele[1]] == 0} ? true : false
     end
 
-    def allocateSpace(value)
-        @actualPositions.each do |ele|
+    def allocate_space(value)
+        @actual_positions.each do |ele|
             @parking_lot_dimensions[ele[0]][ele[1]] = value
         end
     end
 
-    def removeSpace
-        @actualPositions.each do |ele|
+    def remove_space
+        @actual_positions.each do |ele|
             @parking_lot_dimensions[ele[0]][ele[1]] = 0
         end
     end
 
-    def checkParkedVehicle(value)
-        return @actualPositions.all? {|ele| @parking_lot_dimensions[ele[0]][ele[1]] == value} ? true : false
+    def check_parked_vehicle(value)
+        return @actual_positions.all? {|ele| @parking_lot_dimensions[ele[0]][ele[1]] == value} ? true : false
     end
 
-    def displayParkingLot
+    def display_parkingLot
+        puts "*"*30 + " Parking Lot " + "*"*30
         @parking_lot_dimensions.each do |rows|
-            puts rows.map { |columns| columns.to_s }.join("\t")
+            puts "\n\t\t\t" + rows.map { |columns| columns.to_s }.join("\t")
         end
+        puts "\n" + "*"*73
     end
 
 
 end
 
 class Vehicle
-    @@Number_of_Vehicles_parked = 0
-    @@Number_of_Vehicles_requested = 0
-    @@Number_of_Vehicles_removed = 0
+    @@Number_of_vehicles_parked = 0
+    @@Number_of_vehicles_requested = 0
+    @@Number_of_vehicles_removed = 0
 
     attr_accessor :required_space, :vehicle_type
 
     def initialize(spot_needed,vehicle_type)
-        @@Number_of_Vehicles_requested += 1
+        @@Number_of_vehicles_requested += 1
         @required_space = spot_needed
         @vehicle_type = vehicle_type
     end
 
-    def parkedMechanism(parkingObject)
+    def parked_mechanism(parkingObject)
         puts "*"*40
         puts "Let's check the validity of your location - "
-        if(parkingObject.validateLocation)
+        if(parkingObject.validate_location)
             puts "Congrats !! Your location is successfully Validated !!\nLet's Check Availability - "
-            if(parkingObject.checkAvailability)
+            if(parkingObject.check_availability)
                 puts "Congrats !! Space is also available. Let's Park your vehicle -"
-                parkingObject.allocateSpace(@vehicle_type)
+                parkingObject.allocate_space(@vehicle_type)
                 puts "Your vehicle has successfully parked"
-                @@Number_of_Vehicles_parked += 1
+                @@Number_of_vehicles_parked += 1
             else
                 puts "Sorry !! Given location is not available for parking !!"
             end
@@ -102,16 +104,16 @@ class Vehicle
         puts "*"*40
     end
 
-    def removeVehicleMechaism(parkingObject)
+    def remove_vehicle_mechaism(parkingObject)
         puts "*"*40
         puts "Let's check the validity of your location - "
-        if(parkingObject.validateLocation)
+        if(parkingObject.validate_location)
             puts "Congrats !! Your location is successfully Validated !!\nLet's Check Vehicle Parked or not? - "
-            if(parkingObject.checkAvailability)
-                puts "Congrats !! Mentioned vehicle is parked at given location. Let's remove your vehicle -"
-                parkingObject.allocateSpace(@vehicle_type)
+            if(parkingObject.check_parked_vehicle(@vehicle_type))
+                puts "Congrats !! Mentioned vehicle is present at given location. Let's remove your vehicle -"
+                parkingObject.remove_space
                 puts "Your vehicle has successfully removed."
-               @@Number_of_Vehicles_removed -= 1
+                @@Number_of_vehicles_removed -= 1
             else
                 puts "Sorry !! Mentioned vehicle is not parked at given location !!"
             end
@@ -120,29 +122,28 @@ class Vehicle
         end
         puts "*"*40
     end
-
 end
 
 class Bicycle < Vehicle
-    @@bicycleParked = 0
+    @@Bicycle_parked = 0
     def initialize(spot_needed,vehicle_type)
-        @@bicycleParked += 1
+        @@Bicycle_parked += 1
         super
     end
 end
 
 class Bike < Vehicle
-    @@bikeParked = 0
+    @@Bike_parked = 0
     def initialize(spot_needed,vehicle_type)
-        @@bikeParked += 1
+        @@Bike_parked += 1
         super
     end
 end
 
 class Car < Vehicle
-    @@carsParked = 0
+    @@Cars_parked = 0
     def initialize(spot_needed,vehicle_type)
-        @@carsParked += 1
+        @@Cars_parked += 1
         super
     end
 end
@@ -167,51 +168,46 @@ while(user_yes_no == "Y") do
         10. Remove a Bike
         11. Remove a Car"
 
-    userSelection = gets.chomp.to_i
+    user_selection = gets.chomp.to_i
 
-    if (!([4,5,6,7,8].include? userSelection) && (Array(1..11).include? userSelection )) 
+    if (!([4,5,6,7,8].include? user_selection) && (Array(1..11).include? user_selection )) 
         puts "Please Specify Indexes/Location"
-        indexes = gets.chomp.split(" ").map {|x| x.to_i}
-        parkingLotObject.givenPositions = indexes
+        indexes = gets.chomp.split(" ").map {|x| x.to_i - 1}
+        parkingLotObject.given_positions = indexes
     end
     
-    case userSelection
+    case user_selection
     when 1
         vehicle = Bicycle.new(1,"Bicycle")
-        vehicle.parkedMechanism(parkingLotObject)
+        vehicle.parked_mechanism(parkingLotObject)
     when 2
         vehicle = Bike.new(2,"Bike")
-        vehicle.parkedMechanism(parkingLotObject)
+        vehicle.parked_mechanism(parkingLotObject)
     when 3
-        vehicle = Car.new(3,"Car")
-        vehicle.parkedMechanism(parkingLotObject)
+        vehicle = Car.new(4,"Car")
+        vehicle.parked_mechanism(parkingLotObject)
     when 4
-        parkingLotObject.displayParkingLot
+        parkingLotObject.display_parkingLot
     when 5
-        parkingLotObject.displayParkingLot
+        parkingLotObject.display_parkingLot
     when 6
-        puts vehicle.bicycleParked
+        puts Bicycle.Bicycle_parked
     when 7
-        puts vehicle.bikeParked
+        puts Bike.Bike_parked
     when 8
-        puts vehicle.carsParked
+        puts Car.Cars_parked
     when 9
-        vehicle = Bicycle.new(1,"Bicycle")
-        vehicle.removeVehicleMechaism(parking_lot_dimensions)
+        vehicle = Bicycle.new(1, "Bicycle")
+        vehicle.remove_vehicle_mechaism(parkingLotObject)
     when 10
-        vehicle = Bike.new(2,"Bike")
-        vehicle.removeVehicleMechaism(parking_lot_dimensions)
+        vehicle = Bike.new(2, "Bike")
+        vehicle.remove_vehicle_mechaism(parkingLotObject)
     when 11
-        vehicle = Car.new(4,"Bicycle")
-        vehicle.removeVehicleMechaism(parking_lot_dimensions)
+        vehicle = Car.new(4, "Car")
+        vehicle.remove_vehicle_mechaism(parkingLotObject)
     else
         puts "Please select any option from the above only !!"
     end
-    # indexes = gets.chomp.split(" ").map {|x| x.to_i}
-    # parkingLotObject.givenPositions = indexes
-
-    # carObj = Car.new(2,"Car")
-    # carObj.parkedMechanism(parkingLotObject)
 
     puts "Want to perform more operation ? [y/n]"
     user_yes_no = gets.chomp.upcase
