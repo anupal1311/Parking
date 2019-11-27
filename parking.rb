@@ -169,7 +169,7 @@ while(user_yes_no == "Y") do
 
     userSelection = gets.chomp.to_i
 
-    if !([4,5,6,7,8].include? userSelection)
+    if !([4,5,6,7,8].include? userSelection && userSelection > 0 && userSelection < 12)
         puts "Please Specify Indexes/Location"
         indexes = gets.chomp.split(" ").map {|x| x.to_i}
         parkingLotObject.givenPositions = indexes
