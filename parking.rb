@@ -84,7 +84,7 @@ class Vehicle
     end
 
     def parkedMechanism(parkingObject)
-
+        puts "*"*40
         puts "Let's check the validity of your location - "
         if(parkingObject.validateLocation)
             puts "Congrats !! Your location is successfully Validated !!\nLet's Check Availability - "
@@ -99,9 +99,11 @@ class Vehicle
         else
             puts "Sorry !! Given location is not Valid."
         end
+        puts "*"*40
     end
 
     def removeVehicleMechaism(parkingObject)
+        puts "*"*40
         puts "Let's check the validity of your location - "
         if(parkingObject.validateLocation)
             puts "Congrats !! Your location is successfully Validated !!\nLet's Check Vehicle Parked or not? - "
@@ -116,6 +118,7 @@ class Vehicle
         else
             puts "Sorry !! Given location is not Valid."
         end
+        puts "*"*40
     end
 
 end
