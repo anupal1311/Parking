@@ -1,4 +1,7 @@
 class ParkingLot
+    @@Number_of_vehicles_parked = { "Car" => 0 , "Bike" => 0 , "Bicycle" => 0 }
+    @@vehicleDetails = 
+
     attr_accessor :rows, :columns , :parking_lot_dimensions, :given_positions, :actual_positions
     def initialize(rows,columns)
         @rows = rows
@@ -69,32 +72,16 @@ class ParkingLot
         puts "\n" + "*"*73
     end
 
-
-end
-
-class Vehicle
-    @@Number_of_vehicles_parked = 0
-    @@Number_of_vehicles_requested = 0
-    @@Number_of_vehicles_removed = 0
-
-    attr_accessor :required_space, :vehicle_type
-
-    def initialize(spot_needed,vehicle_type)
-        @@Number_of_vehicles_requested += 1
-        @required_space = spot_needed
-        @vehicle_type = vehicle_type
-    end
-
-    def parked_mechanism(parkingObject)
+    def parked_mechanism(vehicleObject)
         puts "*"*40
         puts "Let's check the validity of your location - "
-        if(parkingObject.validate_location)
+        if(validate_location)
             puts "Congrats !! Your location is successfully Validated !!\nLet's Check Availability - "
-            if(parkingObject.check_availability)
+            if(check_availability)
                 puts "Congrats !! Space is also available. Let's Park your vehicle -"
-                parkingObject.allocate_space(@vehicle_type)
+                allocate_space(vehicleObject.vehicle_type)
                 puts "Your vehicle has successfully parked"
-                @@Number_of_vehicles_parked += 1
+                @@Number_of_vehicles_parked[vehicleObject.vehicle_type] = @@Number_of_vehicles_parked[vehicleObject.vehicle_type] + 1
             else
                 puts "Sorry !! Given location is not available for parking !!"
             end
@@ -104,16 +91,16 @@ class Vehicle
         puts "*"*40
     end
 
-    def remove_vehicle_mechaism(parkingObject)
+    def remove_vehicle_mechaism(vehicleObject)
         puts "*"*40
         puts "Let's check the validity of your location - "
-        if(parkingObject.validate_location)
+        if(validate_location)
             puts "Congrats !! Your location is successfully Validated !!\nLet's Check Vehicle Parked or not? - "
-            if(parkingObject.check_parked_vehicle(@vehicle_type))
+            if(check_parked_vehicle(vehicleObject.vehicle_type))
                 puts "Congrats !! Mentioned vehicle is present at given location. Let's remove your vehicle -"
-                parkingObject.remove_space
+                remove_space
                 puts "Your vehicle has successfully removed."
-                @@Number_of_vehicles_removed -= 1
+                @@Number_of_vehicles_parked[vehicleObject.vehicle_type] = @@Number_of_vehicles_parked[vehicleObject.vehicle_type] - 1
             else
                 puts "Sorry !! Mentioned vehicle is not parked at given location !!"
             end
@@ -122,30 +109,28 @@ class Vehicle
         end
         puts "*"*40
     end
+
+end
+
+class Vehicle
+    attr_accessor :vehicle_type
+
+    def initialize(vehicle_type)
+        @vehicle_type = vehicle_type
+    end
+
 end
 
 class Bicycle < Vehicle
-    @@Bicycle_parked = 0
-    def initialize(spot_needed,vehicle_type)
-        @@Bicycle_parked += 1
-        super
-    end
+    SPOT_NEEDED = 1
 end
 
 class Bike < Vehicle
-    @@Bike_parked = 0
-    def initialize(spot_needed,vehicle_type)
-        @@Bike_parked += 1
-        super
-    end
+    SPOT_NEEDED = 2
 end
 
 class Car < Vehicle
-    @@Cars_parked = 0
-    def initialize(spot_needed,vehicle_type)
-        @@Cars_parked += 1
-        super
-    end
+    SPOT_NEEDED = 4
 end
 
 puts "Welcome to Parking Lot !! Please specify the parking lot dimension as Length Width !!"
@@ -178,33 +163,33 @@ while(user_yes_no == "Y") do
     
     case user_selection
     when 1
-        vehicle = Bicycle.new(1,"Bicycle")
-        vehicle.parked_mechanism(parkingLotObject)
+        vehicle = Bicycle.new("Bicycle")
+        parkingLotObject.parked_mechanism(vehicle)
     when 2
-        vehicle = Bike.new(2,"Bike")
-        vehicle.parked_mechanism(parkingLotObject)
+        vehicle = Bike.new("Bike")
+        parkingLotObject.parked_mechanism(vehicle)
     when 3
-        vehicle = Car.new(4,"Car")
-        vehicle.parked_mechanism(parkingLotObject)
+        vehicle = Car.new("Car")
+        parkingLotObject.parked_mechanism(vehicle)
     when 4
         parkingLotObject.display_parkingLot
     when 5
         parkingLotObject.display_parkingLot
     when 6
-        puts Bicycle.Bicycle_parked
+        puts ParkingLot.Number_of_vehicles_parked[:Bicycle]
     when 7
-        puts Bike.Bike_parked
+        puts ParkingLot.Number_of_vehicles_parked[:Bicycle]
     when 8
-        puts Car.Cars_parked
+        puts ParkingLot.Number_of_vehicles_parked[:Bicycle]
     when 9
-        vehicle = Bicycle.new(1, "Bicycle")
-        vehicle.remove_vehicle_mechaism(parkingLotObject)
+        vehicle = Bicycle.new("Bicycle")
+        parkingLotObject.remove_vehicle_mechaism(vehicle)
     when 10
-        vehicle = Bike.new(2, "Bike")
-        vehicle.remove_vehicle_mechaism(parkingLotObject)
+        vehicle = Bike.new("Bike")
+        parkingLotObject.remove_vehicle_mechaism(vehicle)
     when 11
-        vehicle = Car.new(4, "Car")
-        vehicle.remove_vehicle_mechaism(parkingLotObject)
+        vehicle = Car.new("Car")
+        parkingLotObject.remove_vehicle_mechaism(vehicle)
     else
         puts "Please select any option from the above only !!"
     end
